@@ -205,13 +205,12 @@ class TreeView extends View
       when 1
         @selectEntry(entry)
         if entry instanceof FileView
-          @openedItem = atom.workspace.open(entry.getPath(), pending: true)
+          atom.workspace.open(entry.getPath(), pending: true)
         else if entry instanceof DirectoryView
           entry.toggleExpansion(isRecursive)
       when 2
         if entry instanceof FileView
-          @openedItem.then((item) -> item.terminatePendingState?())
-          @unfocus()
+          atom.workspace.open(entry.getPath())
         else if entry instanceof DirectoryView
           entry.toggleExpansion(isRecursive)
 
@@ -388,11 +387,7 @@ class TreeView extends View
       else
         selectedEntry.toggleExpansion()
     else if selectedEntry instanceof FileView
-      uri = selectedEntry.getPath()
-      item = atom.workspace.getActivePane()?.itemForURI(uri)
-      if item? and not options.pending
-        item.terminatePendingState?()
-      atom.workspace.open(uri, options)
+      atom.workspace.open(selectedEntry.getPath(), options)
 
   openSelectedEntrySplit: (orientation, side) ->
     selectedEntry = @selectedEntry()
